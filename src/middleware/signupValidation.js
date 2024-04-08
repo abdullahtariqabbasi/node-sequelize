@@ -1,8 +1,19 @@
-export function validateSignUp(req, res, next) {
-  const { email, password, name, phone } = req.body;
+import Joi from 'joi';
 
-  if (!email || !password || !name || !phone) {
-    return res.status(400).send({ message: 'Missing required fields' });
+const signUpSchema = Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string().required(),
+  name: Joi.string().required(),
+  phone: Joi.string().required(),
+});
+
+const validateSignUpData = async (req, res, next) => {
+  try {
+    await signUpSchema.validateAsync(req.body);
+    next();
+  } catch (error) {
+    return res.status(400).json({ error: error.details[0].message });
   }
-  next();
-}
+};
+
+export { validateSignUpData };

@@ -1,6 +1,7 @@
 import { Op } from 'sequelize';
 import model from '../models';
 
+
 const { User } = model;
 
 class UserController {

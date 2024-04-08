@@ -14,7 +14,9 @@
     "@babel/node": "^7.23.9",
     "@babel/preset-env": "^7.24.4",
     "@babel/register": "^7.23.7",
+    "bcrypt": "^5.1.1",
     "express": "^4.19.2",
+    "joi": "^17.12.3",
     "pg": "^8.11.5",
     "sequelize": "^6.37.2",
     "sequelize-cli": "^6.6.2"
