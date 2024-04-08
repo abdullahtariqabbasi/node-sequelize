@@ -1,36 +1,8 @@
-import { Op } from 'sequelize';
 import model from '../models';
-import bcrypt from 'bcrypt';
-
 
 const { User } = model;
 
-const SALT_ROUNDS = 10;
-
 class UserController {
-  async signUp(req, res) {
-    const { email, password, name, phone } = req.body;
-    try {
-      const user = await User.findOne({ where: { [Op.or]: [{ phone }, { email }] } });
-      if (user) {
-        return res.status(422).send({ message: 'User with that email or phone already exists' });
-      }
-
-      const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-
-      await User.create({
-        name,
-        email,
-        password: hashedPassword,
-        phone,
-      });
-      return res.status(201).send({ message: 'Account created successfully' });
-    } catch (e) {
-      console.log(e);
-      return res.status(500).send({ message: 'Could not perform operation at this time, kindly try again later.' });
-    }
-  }
-
   async index(req, res) {
     try {
       const users = await User.findAll({
