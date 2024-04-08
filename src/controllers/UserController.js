@@ -1,8 +1,11 @@
 import { Op } from 'sequelize';
 import model from '../models';
+import bcrypt from 'bcrypt';
 
 
 const { User } = model;
+
+const SALT_ROUNDS = 10;
 
 class UserController {
   async signUp(req, res) {
@@ -13,10 +16,12 @@ class UserController {
         return res.status(422).send({ message: 'User with that email or phone already exists' });
       }
 
+      const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+
       await User.create({
         name,
         email,
-        password,
+        password: hashedPassword,
         phone,
       });
       return res.status(201).send({ message: 'Account created successfully' });
