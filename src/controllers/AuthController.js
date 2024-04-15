@@ -28,7 +28,7 @@ class AuthController {
       return res.status(201).send({ message: 'Account created successfully' });
     } catch (e) {
       console.log(e);
-      return res.status(500).send({ message: 'Could not perform operation at this time, kindly try again later.' });
+      return res.status(500).send({ message: 'Something went wrong' });
     }
   }
 
