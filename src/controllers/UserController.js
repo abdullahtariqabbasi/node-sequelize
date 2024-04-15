@@ -1,38 +1,28 @@
-import model from '../models';
-
-const { User } = model;
+import userService from '../services/userService';
 
 class UserController {
   async index(req, res) {
     try {
-      const users = await User.findAll({
-        attributes: { exclude: ['password'] },
-        order: [['createdAt', 'ASC']]
-      });
+      const users = await userService.getAllUsers();
       res.status(200).json({ data: users });
-    } catch (err) {
-      this.setErrorCode(err, res);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: 'Something went wrong' });
     }
   }
 
   async show(req, res) {
     const { id } = req.params;
     try {
-      const user = await User.findByPk(id, {
-        attributes: { exclude: ['password'] }
-      });
+      const user = await userService.getUserById(id);
       if (!user) {
         return res.status(404).send({ message: 'User not found' });
       }
       return res.status(200).json({ data: user });
-    } catch (err) {
-      this.setErrorCode(err, res);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: 'Something went wrong' });
     }
-  }
-
-  setErrorCode(err, res) {
-    console.error(err);
-    return res.status(500).send({ message: 'Something went wrong' });
   }
 }
 

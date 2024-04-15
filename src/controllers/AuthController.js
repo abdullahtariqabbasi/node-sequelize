@@ -1,33 +1,19 @@
-import bcrypt from 'bcrypt';
-import { Op } from 'sequelize';
-import jwt from 'jsonwebtoken';
 import Joi from 'joi';
-import model from '../models';
-
-const { User } = model;
-
-const SALT_ROUNDS = 10;
+import userService from '../services/userService';
 
 class AuthController {
   async signUp(req, res) {
     const { email, password, name, phone } = req.body;
     try {
-      const user = await User.findOne({ where: { [Op.or]: [{ phone }, { email }] } });
-      if (user) {
-        return res.status(422).send({ message: 'User with that email or phone already exists' });
+      const existingUser = await userService.findUserByEmail(email);
+      if (existingUser) {
+        return res.status(422).send({ message: 'User with that email already exists' });
       }
 
-      const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-
-      await User.create({
-        name,
-        email,
-        password: hashedPassword,
-        phone,
-      });
+      await userService.createUser(email, password, name, phone);
       return res.status(201).send({ message: 'Account created successfully' });
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      console.log(error);
       return res.status(500).send({ message: 'Something went wrong' });
     }
   }
@@ -36,22 +22,21 @@ class AuthController {
     const { email, password } = req.body;
 
     try {
-      const user = await User.findOne({ where: { email } });
+      const user = await userService.findUserByEmail(email);
       if (!user) {
         return res.status(401).json({ message: 'Invalid email or password' });
       }
 
-      await bcrypt.compare(password, user.password).then(r => {
-        const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        return res.status(200).json({ token });
-      })
-      .catch((err) => {
-        console.error(err.message)
+      const passwordMatch = await userService.verifyPassword(password, user.password);
+      if (!passwordMatch) {
         return res.status(401).json({ message: 'Invalid email or password' });
-      });
+      }
+
+      const token = await userService.generateAuthToken(user);
+      return res.status(200).json({ token });
     } catch (error) {
       console.log(error);
-      return res.status(500).json({ message: error });
+      return res.status(400).json({ message: error.details ? error.details[0].message : 'Internal server error' });
     }
   }
 }
