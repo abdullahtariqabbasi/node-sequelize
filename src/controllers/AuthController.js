@@ -35,14 +35,7 @@ class AuthController {
   async login(req, res) {
     const { email, password } = req.body;
 
-    const schema = Joi.object({
-      email: Joi.string().email().required(),
-      password: Joi.string().required(),
-    });
-
     try {
-      await schema.validateAsync({ email, password });
-
       const user = await User.findOne({ where: { email } });
       if (!user) {
         return res.status(401).json({ message: 'Invalid email or password' });
@@ -58,7 +51,7 @@ class AuthController {
       });
     } catch (error) {
       console.log(error);
-      return res.status(400).json({ message: error });
+      return res.status(500).json({ message: error });
     }
   }
 }

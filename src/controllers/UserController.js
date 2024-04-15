@@ -26,8 +26,7 @@ class UserController {
       }
       return res.status(200).json({ data: user });
     } catch (err) {
-      console.log(err);
-      return res.status(500).send({ message: 'Something went wrong' });
+      this.setErrorCode(err, res);
     }
   }
 
