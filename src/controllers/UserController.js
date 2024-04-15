@@ -27,13 +27,13 @@ class UserController {
       return res.status(200).json({ data: user });
     } catch (err) {
       console.log(err);
-      return res.status(500).send({ message: 'Could not perform operation at this time, kindly try again later.' });
+      return res.status(500).send({ message: 'Something went wrong' });
     }
   }
 
   setErrorCode(err, res) {
     console.error(err);
-    return res.status(500).send({ message: 'Could not perform operation at this time, kindly try again later.' });
+    return res.status(500).send({ message: 'Something went wrong' });
   }
 }
 
