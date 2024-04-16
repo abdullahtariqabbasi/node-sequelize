@@ -12,6 +12,7 @@ export default (sequelize, DataTypes) => {
       return attributes;
     }
     static associate(models) {
+      User.hasMany(models.Project, { foreignKey: 'userId' });
     }
   };
   User.init({

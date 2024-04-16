@@ -1,5 +1,5 @@
 import AuthController from '../controllers/AuthController'
-import { middleware } from '../middlewares/userAuthValidation';
+import { middleware } from '../middlewares/validations/userAuth';
 
 export default (app) => {
   app.post('/register', middleware.validateSignUpData, AuthController.signUp);
