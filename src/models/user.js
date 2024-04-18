@@ -40,6 +40,9 @@ export default (sequelize, DataTypes) => {
     },
     password: DataTypes.STRING,
     status: DataTypes.STRING,
+    profilePicture: {
+      type: DataTypes.STRING
+    },
     last_login_at: DataTypes.DATE,
     last_ip_address: DataTypes.STRING
   }, {

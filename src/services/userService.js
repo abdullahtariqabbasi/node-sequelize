@@ -17,8 +17,34 @@ const userService = {
     });
   },
 
+  async updateUserPassword(userId, password) {
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+    return User.update(
+      { password: hashedPassword },
+      { where: { id: userId } }
+    );
+  },
+
   async generateAuthToken(user) {
     return jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  },
+
+  async generatePasswordResetToken(user) {
+    return jwt.sign({ userId: user.id, key: 'password-reset' }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  },
+
+  async verifyPasswordResetToken(token) {
+    return new Promise((resolve, reject) => {
+      jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
+        if (err) {
+          reject(err);
+        } else if ("key" in decodedToken && decodedToken["key"] == 'password-reset') {
+          resolve("userId" in decodedToken ? decodedToken['userId'] : false);
+        } else {
+          resolve(false);
+        }
+      });
+    });
   },
 
   async findUserByEmail(email) {
