@@ -11,7 +11,7 @@ class AuthController {
       }
 
       await userService.createUser(email, password, name, phone);
-      await emailService.sendRegisterEmail(email,
+      await emailService.enqueueEmailJob(email,
         'Welcome Onboard',
         'Account Created Successfully!');
       return res.status(201).send({ message: 'Account created successfully' });

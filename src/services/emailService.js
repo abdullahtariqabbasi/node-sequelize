@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import emailQueue from '../queues/queue'; 
 
 const transporter = nodemailer.createTransport({
   host: "sandbox.smtp.mailtrap.io",
@@ -38,7 +39,17 @@ const emailService = {
       text: `This is the link to reset your password: http://localhost:3000/reset-password/${token}`
     };
     return await this.sendEmail(mailOptions);
+  },
+
+  async enqueueEmailJob(email, subject, text) {
+    try {
+      await emailQueue.add({ email, subject, text });
+      console.log('Email job enqueued successfully');
+    } catch (error) {
+      console.error('Error enqueuing email job:', error);
+    }
   }
+
 };
 
 export default emailService;
