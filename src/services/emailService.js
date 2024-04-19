@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import emailQueue from '../queues/queue'; 
+import cron from 'node-cron';
 
 const transporter = nodemailer.createTransport({
   host: "sandbox.smtp.mailtrap.io",
@@ -44,6 +45,22 @@ const emailService = {
   async enqueueEmailJob(email, subject, text) {
     try {
       await emailQueue.add({ email, subject, text });
+      console.log('Email job enqueued successfully');
+    } catch (error) {
+      console.error('Error enqueuing email job:', error);
+    }
+  },
+
+  setupReminderEmail(email, subject, text) {
+    try {
+      const registrationTime = new Date();
+      const scheduledTime = new Date(registrationTime.getTime() + 2 * 60000);
+      console.log('Scheduled Time: '+scheduledTime);
+      const cronTime = `${scheduledTime.getMinutes()} ${scheduledTime.getHours()} ${scheduledTime.getDate()} ${scheduledTime.getMonth() + 1} *`;
+      console.log('Cron Time: '+cronTime);
+      cron.schedule(cronTime, async () => {
+        await emailQueue.add({ email, subject, text });
+      });
       console.log('Email job enqueued successfully');
     } catch (error) {
       console.error('Error enqueuing email job:', error);

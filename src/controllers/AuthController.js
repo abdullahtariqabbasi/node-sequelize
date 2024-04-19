@@ -14,6 +14,9 @@ class AuthController {
       await emailService.enqueueEmailJob(email,
         'Welcome Onboard',
         'Account Created Successfully!');
+      emailService.setupReminderEmail(email,
+        'Reminder',
+        'Its been 2 mins!!!');
       return res.status(201).send({ message: 'Account created successfully' });
     } catch (error) {
       console.log(error);
