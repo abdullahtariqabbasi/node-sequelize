@@ -17,7 +17,7 @@ class ProjectController {
       res.status(200).json({ data: projects });
     } catch (error) {
       console.error(error);
-      res.status(500).send({ message: 'Something went wrong' });
+      res.status(500).send({ message: 'Something went wrong!' });
     }
   }
   async show(req, res) {
