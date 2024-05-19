@@ -52,7 +52,7 @@ class AuthController {
         return res.status(401).json({ message: 'Authorization token is missing' });
       }
       const userId = await userService.verifyPasswordResetToken(token);
-      console.log('userId: ' + userId);
+
       if (!userId) {
         return res.status(401).json({ message: 'Invalid token' });
       }
