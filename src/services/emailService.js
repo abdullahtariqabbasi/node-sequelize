@@ -64,7 +64,6 @@ const emailService = {
       console.log('Email job enqueued successfully');
     } catch (error) {
       console.error('Error enqueuing email job:', error);
-      console.error('Error enqueuing email job:', error);
     }
   }
 
